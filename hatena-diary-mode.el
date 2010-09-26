@@ -591,7 +591,7 @@
 	(setq day (concat (match-string 1) (match-string 2) (match-string 3)))
 	(setq title (match-string 4))
 	(setq pt-start (match-end 0))
-	(re-search-forward "</body>\n</day>" nil t)
+	(re-search-forward "</body>\n" nil t)
 	(setq pt-end (match-beginning 0))
 	(setq body (buffer-substring pt-start pt-end))
 	(save-excursion
