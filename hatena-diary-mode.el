@@ -118,7 +118,11 @@
   (define-key hatena-diary-mode-map "\C-c\C-p" 'hatena-submit)
   (define-key hatena-diary-mode-map "\C-c\C-b" 'hatena-find-previous)
   (define-key hatena-diary-mode-map "\C-c\C-f" 'hatena-find-following)
-  (define-key hatena-diary-mode-map "\C-ct" 'hatena-change-trivial))
+  (define-key hatena-diary-mode-map "\C-ct" 'hatena-change-trivial)
+  (define-key help-map "4" 'hatena-help-syntax1)
+  (define-key help-map "5" 'hatena-help-syntax2)
+  (define-key help-map "6" 'hatena-help-syntax3)
+  (define-key help-map "7" 'hatena-help-syntax4))
 
 (defconst hatena-today-buffer nil)
 (defun hatena (&optional date)
@@ -698,6 +702,30 @@
 			   number)))
     (substring str 0 10) ;;
     ))
+
+
+;-------------------------------------------
+; はてな記法ヘルプ
+(defun hatena-help-syntax1 ()
+  "はてな記法 入力支援記法のヘルプを表示する"
+  (interactive)
+  (describe-variable 'hatena-help-syntax-index))
+
+(defun hatena-help-syntax2 ()
+  "はてな記法 自動リンクのヘルプを表示する"
+  (interactive)
+  (describe-variable 'hatena-help-syntax-autolink))
+
+(defun hatena-help-syntax3 ()
+  "はてな記法 はてな内自動リンクのヘルプを表示する"
+  (interactive)
+  (describe-variable 'hatena-help-syntax-hatena-autolink))
+
+(defun hatena-help-syntax4 ()
+  "はてな記法 入力支援機能のヘルプを表示する"
+  (interactive)
+  (describe-variable 'hatena-help-syntax-other))
+
 
 (provide 'hatena-diary-mode)
 
