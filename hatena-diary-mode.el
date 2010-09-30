@@ -122,7 +122,8 @@
   (define-key help-map "4" 'hatena-help-syntax1)
   (define-key help-map "5" 'hatena-help-syntax2)
   (define-key help-map "6" 'hatena-help-syntax3)
-  (define-key help-map "7" 'hatena-help-syntax4))
+  (define-key help-map "7" 'hatena-help-syntax4)
+  (define-key help-map "8" 'hatena-help-syntax5))
 
 (defconst hatena-today-buffer nil)
 (defun hatena (&optional date)
@@ -707,21 +708,26 @@
 ;-------------------------------------------
 ; はてな記法ヘルプ
 (defun hatena-help-syntax1 ()
-  "はてな記法 入力支援記法のヘルプを表示する"
+  "はてな記法 ヘルプ目次を表示する"
   (interactive)
   (describe-variable 'hatena-help-syntax-index))
 
 (defun hatena-help-syntax2 ()
+  "はてな記法 入力支援記法のヘルプを表示する"
+  (interactive)
+  (describe-variable 'hatena-help-syntax-input))
+
+(defun hatena-help-syntax3 ()
   "はてな記法 自動リンクのヘルプを表示する"
   (interactive)
   (describe-variable 'hatena-help-syntax-autolink))
 
-(defun hatena-help-syntax3 ()
+(defun hatena-help-syntax4 ()
   "はてな記法 はてな内自動リンクのヘルプを表示する"
   (interactive)
   (describe-variable 'hatena-help-syntax-hatena-autolink))
 
-(defun hatena-help-syntax4 ()
+(defun hatena-help-syntax5 ()
   "はてな記法 入力支援機能のヘルプを表示する"
   (interactive)
   (describe-variable 'hatena-help-syntax-other))
