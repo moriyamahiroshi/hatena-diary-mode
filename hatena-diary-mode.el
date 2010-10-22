@@ -27,7 +27,7 @@
 ;; If not, see <http://www.gnu.org/licenses/>.
 
 
-(defconst hatena-version "2.0" "Version number of hatena.el")
+(defconst hatena-version "2.1.0" "Version number of hatena.el")
 
 ;; ■インストール方法
 ;; 1) 適当なディレクトリにこのファイルをおく.
@@ -72,6 +72,10 @@
 ;;    `hatena-insert-webdiary' はてなバッファで実行すると、現在 web に
 ;;    アップされているファイルを取ってくる。 o
 ;;    `hatena-twitter' 日記更新時にTwitterに通知するかどうかを変えます。
+;;　　`hatena-image-insert' はてなフォトライフに画像をアップロードし
+;;     エントリに画像表示用のタグを挿入します。
+;;    `hatena-get-webdiary' http://d.hatena.ne.jp/usrid/export を
+;;    取ってきて変換。足りない日記分をファイルに足す。
 ;;
 ;; 4) 上位モード
 ;;    hatena-diary-mode はデフォルトで html-mode に被せています。これを
