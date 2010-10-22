@@ -119,6 +119,7 @@
   (define-key hatena-diary-mode-map "\C-c\C-b" 'hatena-find-previous)
   (define-key hatena-diary-mode-map "\C-c\C-f" 'hatena-find-following)
   (define-key hatena-diary-mode-map "\C-ct" 'hatena-change-trivial)
+  (define-key hatena-diary-mode-map "\C-c\C-i" 'hatena-image-insert)
   (define-key help-map "4" 'hatena-help-syntax1)
   (define-key help-map "5" 'hatena-help-syntax2)
   (define-key help-map "6" 'hatena-help-syntax3)
@@ -732,6 +733,56 @@
   (interactive)
   (describe-variable 'hatena-help-syntax-other))
 
+
+(defun hatena-image-insert (filename filesize)
+  "画像をはてなフォトライフにアップロードし、日記に挿入する"
+  (interactive "fImage File:\nsFile Size:")
+  (let*
+      ((extension (upcase (substring filename (- (length filename) 3))))
+       (baseurl (concat "http://f.hatena.ne.jp/" hatena-usrid "/"))
+       (url (concat baseurl "up"))
+       (rkm 
+		    (let* ((md5sum (md5 (with-temp-buffer
+					  (insert-file-contents hatena-cookie)
+					  (re-search-forward "rk\\s \\([0-9a-zA-Z]+\\)")
+					  (concat (buffer-substring
+							     (match-beginning 1)
+							     (match-end 1)))) nil nil 'utf-8))
+			   (p 0)
+			   (temp ""))
+		      (while (> (length md5sum) p)
+			(setq temp
+			      (concat
+			       temp
+			       (char-to-string (string-to-number
+						(substring md5sum p (+ p 2)) 16))))
+			(setq p (+ p 2)))
+		      (substring (base64-encode-string temp) 0 22))))
+    (cond
+     ((or (string= extension "JPG") (string= extension "GIF") (string= extension "PNG"))
+      (with-temp-buffer
+       (call-process hatena-curl-command nil t nil
+		     "-L"
+		     "-b" hatena-cookie
+		     "-x" hatena-proxy
+		     "-F" (concat "rkm=" rkm)
+		     "-F" "mode=enter"
+		     "-F" "fototitle1="
+		     "-F" (concat "size=" filesize)
+		     "-F" "taglist="
+		     "-F" (concat "image1=@" (expand-file-name filename))
+		     url)
+       (goto-char (point-min))
+       (re-search-forward "check-\\([0-9]+\\)")
+       (setq hatena-photo (concat "[f:id:" hatena-usrid ":" (buffer-substring
+	(match-beginning 1)
+	(match-end 1)
+	) "p:image]")))
+      (insert hatena-photo)
+      (newline)
+      (insert-image (create-image (expand-file-name filename)))
+      ))))
+	 
 
 (provide 'hatena-diary-mode)
 
