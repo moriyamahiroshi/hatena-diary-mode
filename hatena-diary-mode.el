@@ -781,7 +781,7 @@
        (setq hatena-photo (concat "[f:id:" hatena-usrid ":" (buffer-substring
 	(match-beginning 1)
 	(match-end 1)
-	) "p:image]")))
+	) "j:image]")))
       (insert hatena-photo)
       (newline)
       (insert-image (create-image (expand-file-name filename)))
