@@ -372,8 +372,8 @@
     (call-process hatena-curl-command nil nil nil 
 		  "-k"  "-c" hatena-cookie
 		  "-x" hatena-proxy
-		  "-d" (concat "name=" hatena-usrid)
-		  "-d" (concat "password=" password)
+		  "-d" (concat "name=" (hatena-url-encode-string hatena-usrid))
+		  "-d" (concat "password=" (hatena-url-encode-string password))
 		  "-d" (concat "autologin=1")
 		  "-d" (concat "mode=enter")
 		  "https://www.hatena.ne.jp/login"))
