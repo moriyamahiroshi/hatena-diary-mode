@@ -227,6 +227,47 @@
     (format-time-string "%Y%m%d" 
 			(apply 'encode-time lst ))))
 
+(defun hatena-w3c-dtf-time-zone-designator (&optional time universal)
+  (save-match-data
+    (let ((time (or time (current-time))))
+      (let ((tzd (format-time-string "%z" time universal)))
+        (if universal
+            "Z"
+          (if (string-match "\\`\\([-+][0-9][0-9]\\)\\([0-9][0-9]\\)\\'"
+                            tzd)
+              (concat (match-string-no-properties 1 tzd) ":"
+                      (match-string-no-properties 2 tzd))
+            (error (concat "Unexpected return value of "
+                           "(format-time-string \"%%z\" time universal): %s")
+                   (prin1-to-string tzd))))))))
+
+(defun hatena-w3c-dtf-string (&optional time universal)
+  ;; ref. "Date and Time Formats" <http://www.w3.org/TR/NOTE-datetime>.
+  (let ((time (or time (current-time))))
+      (concat (format-time-string "%Y-%m-%dT%T" time universal)
+              (hatena-w3c-dtf-time-zone-designator time universal))))
+
+(defun hatena-set-datetime-attribute-to-ins-and-del-elements ()
+  "バッファ内のすべてのINS要素・DEL要素に現在時刻のDATETIME属性を
+セットする。既にDATETIME属性がセットされている要素は変更しない。"
+  (save-excursion
+    (save-restriction
+      (save-match-data
+        (widen)
+        (goto-char (point-min))
+        (while (re-search-forward
+                "<\\(ins\\|del\\)\\([ \t\r\n]*\\|[ \t\r\n]+[^>]+?\\)>" nil t)
+          (replace-match
+           (if (save-match-data
+                 (string-match "[ \t\r\n]datetime[ \t\r\n]*=[ \t\r\n]*['\"]"
+                               (match-string 0)))
+               (match-string 0)
+             (concat "<"
+                     (match-string 1)   ;"ins" or "del"
+                     " datetime=\"" (hatena-w3c-dtf-string) "\""
+                     (match-string 2)   ;attributes
+                     ">"))))))))
+
 (defun hatena-submit (&optional file userid)
  "はてな日記 http://d.hatena.ne.jp/ に post メソッドで日記を送る. curl を使う. "
   (interactive)
@@ -264,7 +305,9 @@
 	  (replace-match 
 	   (concat "*" (hatena-current-second i) "*")
 	   (setq i (1+ i))
-	   ))))
+	   )))
+      ;; INS要素・DEL要素に現在時刻のDATETIME属性をセットする。
+      (hatena-set-datetime-attribute-to-ins-and-del-elements))
     (save-buffer))
 
   (if (not userid) 
