@@ -106,6 +106,9 @@
 ;;           (goto-char (point-min))
 ;;	     (replace-regexp "\\([^\n]\\)\n\\([^\n]\\)" "\\1\\2")))
 ;;     
+;;    `hatena-diary-mode-before-submit-hook' 日記をポスト `hatena-submit' する
+;;     直前に呼び出す関数です。`hatena-diary-mode-submit-hook' とは違い、
+;;     このフックで加えられた変更は手元のファイルにも残ります。
 
 
 (require 'hatena-vars)
@@ -234,6 +237,7 @@
   (if file nil 
     (setq file buffer-file-name)
     (save-excursion
+      (run-hooks 'hatena-diary-mode-before-submit-hook)
       ;;"*t*" にするか "*pn*" にするか
       (cond ( (= hatena-entry-type 0)
 	      (progn

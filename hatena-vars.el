@@ -90,8 +90,36 @@ is expected to accept only one argument(URL)."
   :type 'boolean
   :group 'hatena)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defcustom hatena-diary-mode-submit-hook nil
+  "日記をはてなダイアリーに投稿 `hatena-submit' する直前に、送信す
+る内容を持つ一時バッファ上で呼び出されるフック。例えば「連続しない
+改行をすべて除く」などの処理が考えられます。
+
+例:
+    (add-hook 'hatena-diary-mode-submit-hook
+              (lambda ()
+                (goto-char (point-min))
+                (replace-regexp \"\\\\([^\\n]\\\\)\\n\\\\([^\\n]\\\\)\" \"\\\\1\\\\2\")))
+
+このフックで加えられた変更は日記ファイルには残りません。手元にも変
+更を残したい場合は `hatena-diary-mode-before-submit-hook' を使用し
+てください。"
+  :type 'hook
+  :group 'hatena)
+
+(defcustom hatena-diary-mode-before-submit-hook nil
+  "日記をはてなダイアリーに投稿 `hatena-submit' する際の前処理の段
+階で、当該の日記のファイルバッファ上にて呼び出されるフック。
+
+このフックで加えられた変更は手元のファイルにも残ります。ファイルに
+は変更を加えずに投稿されるデータのみをフックで編集したい場合は、
+`hatena-diary-mode-submit-hook' を使用してください。"
+  :type 'hook
+  :group 'hatena)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;日記ファイルの正規表現
 (defvar hatena-fname-regexp
